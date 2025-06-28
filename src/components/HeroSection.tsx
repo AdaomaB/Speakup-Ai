@@ -12,9 +12,14 @@ const formats = [
   { id: 'toast', label: 'Toast', icon: '🥂' },
   { id: 'speech', label: 'Full Speech', icon: '🎤' },
   { id: 'letter', label: 'Letter', icon: '✉️' },
+  { id: 'email', label: 'Email', icon: '📧' },
   { id: 'poem', label: 'Poem', icon: '📝' },
   { id: 'rap', label: 'Rap', icon: '🎵' },
-  { id: 'prayer', label: 'Prayer', icon: '🙏' }
+  { id: 'prayer', label: 'Prayer', icon: '🙏' },
+  { id: 'resignation', label: 'Resignation Letter', icon: '📋' },
+  { id: 'love-letter', label: 'Love Letter', icon: '💕' },
+  { id: 'apology', label: 'Apology', icon: '🙏' },
+  { id: 'rejection', label: 'Rejection Letter', icon: '❌' }
 ];
 
 const tones = [
@@ -22,12 +27,18 @@ const tones = [
   { id: 'heartfelt', label: 'Heartfelt', icon: '❤️' },
   { id: 'emotional', label: 'Emotional', icon: '😭' },
   { id: 'formal', label: 'Formal', icon: '💼' },
+  { id: 'casual', label: 'Casual', icon: '😊' },
   { id: 'romantic', label: 'Romantic', icon: '💕' },
   { id: 'religious', label: 'Religious', icon: '✝️' },
-  { id: 'childlike', label: 'Child-like', icon: '🧒' }
+  { id: 'childlike', label: 'Child-like', icon: '🧒' },
+  { id: 'professional', label: 'Professional', icon: '👔' },
+  { id: 'motivational', label: 'Motivational', icon: '🚀' }
 ];
 
 const durations = [
+  { id: 'short', label: 'Short (50-100 words)' },
+  { id: 'medium', label: 'Medium (150-300 words)' },
+  { id: 'long', label: 'Long (500-1000+ words)' },
   { id: '15s', label: '15 seconds' },
   { id: '30s', label: '30 seconds' },
   { id: '1min', label: '1 minute' },
@@ -42,7 +53,8 @@ const voices = [
   { id: 'adult-female', label: 'Adult Female', icon: '👩' },
   { id: 'teen', label: 'Teen', icon: '👦' },
   { id: 'child-male', label: 'Boy Child', icon: '🧒' },
-  { id: 'child-female', label: 'Girl Child', icon: '👧' }
+  { id: 'child-female', label: 'Girl Child', icon: '👧' },
+  { id: 'robotic', label: 'Robotic', icon: '🤖' }
 ];
 
 const culturalContexts = [
@@ -68,7 +80,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
   const [prompt, setPrompt] = useState('');
   const [selectedFormat, setSelectedFormat] = useState('speech');
   const [selectedTone, setSelectedTone] = useState('heartfelt');
-  const [selectedDuration, setSelectedDuration] = useState('2min');
+  const [selectedDuration, setSelectedDuration] = useState('medium');
   const [selectedVoice, setSelectedVoice] = useState('adult-female');
   const [selectedCulture, setSelectedCulture] = useState('universal');
   const [selectedRole, setSelectedRole] = useState('self');
@@ -110,6 +122,18 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
 
   return (
     <section className="relative px-6 py-12 lg:py-20">
+      {/* Powered by Bolt Badge */}
+      <div className="absolute top-4 right-4 z-10">
+        <div className="flex items-center gap-3 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 shadow-lg border border-gray-200">
+          <img 
+            src="/black_circle_360x360.png" 
+            alt="Powered by Bolt" 
+            className="w-8 h-8"
+          />
+          <span className="text-sm font-medium text-gray-700">Powered by Bolt</span>
+        </div>
+      </div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-pink-300 to-purple-300 rounded-full opacity-20 animate-pulse"></div>
@@ -161,9 +185,17 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
             </span>
           </h2>
           
-          <p className="text-xl lg:text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-xl lg:text-2xl text-gray-600 mb-8 max-w-4xl mx-auto leading-relaxed">
             From weddings to awkward apologies, SpeakUp AI writes exactly what you need with perfect tone, style, and timing.
           </p>
+
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 max-w-4xl mx-auto mb-12">
+            <p className="text-blue-800 font-medium">
+              🧠 <strong>Real AI Content Generation:</strong> This app analyzes your exact request and generates authentic, 
+              context-aware content without placeholder data. Specify names, relationships, occasions, and emotions 
+              for perfectly personalized results.
+            </p>
+          </div>
         </div>
 
         {/* Main Generation Form */}
@@ -172,15 +204,21 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
             {/* Prompt Input */}
             <div className="mb-8">
               <label htmlFor="prompt" className="block text-left text-gray-700 font-semibold mb-4 text-lg">
-                What's the occasion and who's it for? (Include names, relationships, specific details)
+                Describe exactly what you need (Include names, relationships, specific details, occasion)
               </label>
-              <input
-                type="text"
+              <textarea
                 id="prompt"
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                placeholder="e.g., Birthday speech for my sister Sarah who loves cooking, Apology to my best friend Mike after our argument, Wedding toast for my daughter Emma and her fiancé James..."
-                className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-white/80"
+                placeholder="Examples:
+• Email to my boss Sarah requesting time off for my wedding next month
+• Heartfelt resignation letter to my manager thanking them for 3 years of mentorship
+• Funny wedding toast for my best friend Mike who loves basketball and terrible jokes
+• Formal apology letter to my neighbor about my dog barking last week
+• Love letter to my girlfriend Emma for our 2-year anniversary
+• Professional rejection email to job candidate with encouragement"
+                className="w-full px-6 py-4 text-lg border-2 border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none transition-all bg-white/80 min-h-[120px] resize-vertical"
+                rows={4}
               />
             </div>
 
@@ -228,7 +266,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
               <div>
                 <label className="block text-gray-700 font-semibold mb-3 flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  Duration
+                  Length
                 </label>
                 <select
                   value={selectedDuration}
@@ -325,7 +363,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
               className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-white font-bold py-5 px-8 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:transform-none text-xl shadow-xl"
             >
               <Sparkles className="inline-block w-6 h-6 mr-3" />
-              Generate Now
+              Generate Perfect Content
             </button>
 
             {/* Private Mode Notice */}
@@ -341,10 +379,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onGenerateClick, onViewSaved 
         {/* Feature Tags */}
         <div className="flex flex-wrap justify-center items-center gap-4 mt-8 text-sm">
           <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-purple-200 flex items-center gap-2">
-            ✨ No login required
+            ✨ Real AI content generation
           </span>
           <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-purple-200 flex items-center gap-2">
-            🎯 Intent clarity analyzer
+            🎯 Context-aware analysis
+          </span>
+          <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-purple-200 flex items-center gap-2">
+            📧 Email formatting with subject lines
           </span>
           <span className="bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border border-purple-200 flex items-center gap-2">
             🔊 Multi-voice text-to-speech
