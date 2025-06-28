@@ -504,7 +504,7 @@ With love and hope.`;
     } else if (emotions.includes('happy') || emotions.includes('excited')) {
       content += `I am so happy and excited! ${details || 'This is such a wonderful moment and I wanted to share my joy with you.'}`;
     } else if (emotions.includes('sad') || emotions.includes('worried')) {
-      content += `I've been thinking about you and wanted to reach out. ${details || 'Please know that I care about you and I'm here if you need anything.'}`;
+      content += `I've been thinking about you and wanted to reach out. ${details || 'Please know that I care about you and I\'m here if you need anything.'}`;
     } else {
       content += `I wanted to take a moment to reach out to you. ${details || 'You are important to me and I value our relationship.'}`;
     }
